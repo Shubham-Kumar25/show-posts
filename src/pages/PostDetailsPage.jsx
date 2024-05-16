@@ -1,4 +1,3 @@
-// PostDetailsPage.jsx
 import React, { useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPost } from "../redux/postsSlice";
