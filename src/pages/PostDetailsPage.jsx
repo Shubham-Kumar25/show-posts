@@ -31,31 +31,31 @@ function PostDetailsPage() {
   }
 
   return (
-    <div className="container mx-auto p-4 flex justify-center items-center h-full bg-gray-100">
-      <div className="max-w-md p-4 rounded-3xl shadow-2xl w-full">
-        <div className="bg-white rounded-lg overflow-hidden shadow-md mb-4">
+    <div className="container flex items-center justify-center h-full p-4 mx-auto bg-gray-100">
+      <div className="w-full max-w-3xl p-4 shadow-2xl rounded-3xl">
+        <div className="mb-4 overflow-hidden bg-white rounded-lg shadow-md">
           <div className="px-6 py-4">
-            <div className="font-bold text-xl mb-2">
-              <span className="text-green-800 font-bold">Title: </span>
+            <div className="mb-2 text-xl font-bold">
+              <span className="font-bold text-green-800">Title: </span>
               {post.title}
             </div>
-            <p className="text-gray-700 text-base">
-              <span className="text-green-800 font-bold">Content: </span>
+            <p className="text-base text-gray-700">
+              <span className="font-bold text-green-800">Content: </span>
               {post.body}
             </p>
             <div className="mt-4">
-              <h3 className="font-semibold text-lg">Author: {user.name}</h3>
+              <h3 className="text-lg font-semibold">Author: {user.name}</h3>
               <p className="text-gray-600">Email: {user.email}</p>
             </div>
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-md">
           <div className="px-6 py-4">
-            <h3 className="font-bold text-red-800 text-xl mb-2">Comments:</h3>
+            <h3 className="mb-2 text-xl font-bold text-red-800">Comments:</h3>
             {comments.map((comment) => (
-              <div key={comment.id} className="border-b pb-4">
+              <div key={comment.id} className="pb-4 border-b">
                 <p className="text-gray-700">{comment.body}</p>
-                <p className="text-violet-700 text-sm mt-1">- {comment.name}</p>
+                <p className="mt-1 text-sm text-violet-700">- {comment.name}</p>
               </div>
             ))}
           </div>
