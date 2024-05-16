@@ -1,13 +1,15 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = [];
+
 const postsSlice = createSlice({
   name: "posts",
-  initialState: [],
+  initialState,
   reducers: {
-    setPosts: (state, action) => {
+    setPosts(state, action) {
       return action.payload;
     },
-    setPost: (state, action) => {
+    setPost(state, action) {
       const index = state.findIndex((post) => post.id === action.payload.id);
       if (index >= 0) {
         state[index] = action.payload;
@@ -25,7 +27,7 @@ export const fetchPosts = () => async (dispatch) => {
       throw new Error("Failed to fetch posts");
     }
     const data = await response.json();
-    dispatch(postsSlice.actions.setPosts(data));
+    dispatch(setPosts(data));
   } catch (error) {
     console.error("Error fetching posts:", error);
   }
@@ -40,10 +42,11 @@ export const fetchPost = (postId) => async (dispatch) => {
       throw new Error(`Failed to fetch post with ID ${postId}`);
     }
     const data = await response.json();
-    dispatch(postsSlice.actions.setPost(data));
+    dispatch(setPost(data));
   } catch (error) {
     console.error(`Error fetching post with ID ${postId}:`, error);
   }
 };
 
+export const { setPosts, setPost } = postsSlice.actions;
 export default postsSlice.reducer;

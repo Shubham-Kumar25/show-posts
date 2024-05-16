@@ -1,10 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 
+const initialState = {};
+
 const commentsSlice = createSlice({
   name: "comments",
-  initialState: {},
+  initialState,
   reducers: {
-    setComments: (state, action) => {
+    setComments(state, action) {
       const { postId, comments } = action.payload;
       state[postId] = comments;
     },
@@ -20,10 +22,11 @@ export const fetchComments = (postId) => async (dispatch) => {
       throw new Error("Failed to fetch comments");
     }
     const data = await response.json();
-    dispatch(commentsSlice.actions.setComments({ postId, comments: data }));
+    dispatch(setComments({ postId, comments: data }));
   } catch (error) {
     console.error("Error fetching comments:", error);
   }
 };
 
+export const { setComments } = commentsSlice.actions;
 export default commentsSlice.reducer;
