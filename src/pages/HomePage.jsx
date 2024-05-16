@@ -22,25 +22,28 @@ function HomePage() {
   }, [dispatch, posts, users]);
 
   return (
-    <div className="container mx-auto p-4">
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+    <div className="container p-4 mx-auto">
+      <h1 className="p-4 mb-4 text-3xl font-bold text-center border-b-2 border-red-800 text-amber-700">
+        All Posts
+      </h1>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
         {posts.map((post) => (
           <div
             key={post.id}
-            className="rounded-3xl overflow-hidden shadow-xl bg-white border border-gray-200 hover:shadow-lg transition duration-300"
+            className="overflow-hidden transition duration-300 bg-white border border-gray-200 shadow-xl rounded-3xl hover:shadow-lg"
           >
             <Link to={`/post/${post.id}`}>
               <div className="px-6 py-4">
-                <div className="font-semibold text-xl mb-2 text-violet-800">
-                  <span className="text-green-800 font-bold">Title:</span>{" "}
+                <div className="mb-2 text-xl font-semibold text-violet-800">
+                  <span className="font-bold text-green-800">Title:</span>{" "}
                   {post.title}
                 </div>
-                <p className="text-gray-700 text-base">
-                  <span className="text-green-800 font-semibold">Content:</span>{" "}
+                <p className="text-base text-gray-700">
+                  <span className="font-semibold text-green-800">Content:</span>{" "}
                   {post.body}
                 </p>
                 {users[post.userId] && (
-                  <p className="text-red-500 text-base mt-4 font-semibold">
+                  <p className="mt-4 text-base font-semibold text-red-500">
                     <span>Author:</span> {users[post.userId].name}
                   </p>
                 )}

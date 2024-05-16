@@ -32,7 +32,10 @@ function PostDetailsPage() {
 
   return (
     <div className="container flex items-center justify-center h-full p-4 mx-auto bg-gray-100">
-      <div className="w-full max-w-3xl p-4 shadow-2xl rounded-3xl">
+      <div className="w-full max-w-4xl p-1 shadow-sm rounded-3xl">
+        <h1 className="p-4 mb-4 text-3xl font-bold text-center border-b-2 border-red-800 text-amber-700">
+          Post by: {user.name}
+        </h1>
         <div className="mb-4 overflow-hidden bg-white rounded-lg shadow-md">
           <div className="px-6 py-4">
             <div className="mb-2 text-xl font-bold">
