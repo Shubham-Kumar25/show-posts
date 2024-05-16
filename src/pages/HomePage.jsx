@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPosts } from "../redux/postsSlice";
 import { fetchUser } from "../redux/usersSlice";
@@ -33,12 +33,18 @@ function HomePage() {
 
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
-  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+  const currentPosts = useMemo(
+    () => posts.slice(indexOfFirstPost, indexOfLastPost),
+    [posts, indexOfFirstPost, indexOfLastPost]
+  );
 
-  const pageNumbers = [];
-  for (let i = 1; i <= Math.ceil(posts.length / postsPerPage); i++) {
-    pageNumbers.push(i);
-  }
+  const pageNumbers = useMemo(() => {
+    const numbers = [];
+    for (let i = 1; i <= Math.ceil(posts.length / postsPerPage); i++) {
+      numbers.push(i);
+    }
+    return numbers;
+  }, [posts.length, postsPerPage]);
 
   return (
     <div className="container p-4 mx-auto">

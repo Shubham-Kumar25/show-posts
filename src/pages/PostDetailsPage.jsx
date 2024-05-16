@@ -17,12 +17,13 @@ function PostDetailsPage() {
   useEffect(() => {
     if (!post) {
       dispatch(fetchPost(id));
-    }
-    if (post && !user) {
-      dispatch(fetchUser(post.userId));
-    }
-    if (post && !comments) {
-      dispatch(fetchComments(post.id));
+    } else {
+      if (!user) {
+        dispatch(fetchUser(post.userId));
+      }
+      if (!comments) {
+        dispatch(fetchComments(post.id));
+      }
     }
   }, [dispatch, post, user, comments, id]);
 
