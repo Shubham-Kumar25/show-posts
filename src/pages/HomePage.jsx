@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPosts } from "../redux/postsSlice";
 import { fetchUser } from "../redux/usersSlice";
@@ -8,6 +8,9 @@ function HomePage() {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.posts);
   const users = useSelector((state) => state.users);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const postsPerPage = 10;
 
   useEffect(() => {
     dispatch(fetchPosts());
@@ -21,13 +24,29 @@ function HomePage() {
     });
   }, [dispatch, posts, users]);
 
+  useEffect(() => {
+    window.scrollTo({
+      top: 0,
+      behavior: "smooth",
+    });
+  }, [currentPage]);
+
+  const indexOfLastPost = currentPage * postsPerPage;
+  const indexOfFirstPost = indexOfLastPost - postsPerPage;
+  const currentPosts = posts.slice(indexOfFirstPost, indexOfLastPost);
+
+  const pageNumbers = [];
+  for (let i = 1; i <= Math.ceil(posts.length / postsPerPage); i++) {
+    pageNumbers.push(i);
+  }
+
   return (
     <div className="container p-4 mx-auto">
       <h1 className="p-4 mb-4 text-3xl font-bold text-center border-b-2 border-red-800 text-amber-700">
         All Posts
       </h1>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-2">
-        {posts.map((post) => (
+        {currentPosts.map((post) => (
           <div
             key={post.id}
             className="overflow-hidden transition duration-300 bg-white border border-gray-200 shadow-xl rounded-3xl hover:shadow-lg"
@@ -51,6 +70,26 @@ function HomePage() {
             </Link>
           </div>
         ))}
+      </div>
+      <div className="flex justify-center mt-4">
+        <nav>
+          <ul className="flex list-none">
+            {pageNumbers.map((number) => (
+              <li key={number} className="mx-1">
+                <button
+                  onClick={() => setCurrentPage(number)}
+                  className={`px-4 py-2 border rounded-lg ${
+                    currentPage === number
+                      ? "bg-blue-500 text-white"
+                      : "bg-white text-blue-500"
+                  }`}
+                >
+                  {number}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </div>
     </div>
   );
