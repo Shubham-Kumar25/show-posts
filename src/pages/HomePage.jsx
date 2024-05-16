@@ -73,7 +73,7 @@ function HomePage() {
       </div>
       <div className="flex justify-center mt-4">
         <nav>
-          <ul className="flex list-none">
+          <ul className="flex flex-wrap justify-center list-none">
             {pageNumbers.map((number) => (
               <li key={number} className="mx-1">
                 <button
