@@ -4,6 +4,7 @@ import { fetchPost } from "../redux/postsSlice";
 import { fetchUser } from "../redux/usersSlice";
 import { fetchComments } from "../redux/commentsSlice";
 import { useParams } from "react-router-dom";
+import Loader from "../components/Loader";
 
 function PostDetailsPage() {
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ function PostDetailsPage() {
   }, [dispatch, post, user, comments, id]);
 
   if (!post || !user || !comments) {
-    return <div>Loading...</div>;
+    return <Loader />;
   }
 
   return (
