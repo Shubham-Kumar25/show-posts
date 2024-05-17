@@ -59,7 +59,7 @@ function HomePage() {
 
   return (
     <div className="container p-4 mx-auto">
-      <h1 className="p-4 mb-4 text-3xl font-bold text-center border-b-2 border-red-800 text-amber-700">
+      <h1 className="p-4 mb-4 text-3xl font-bold text-center border-b-2 border-orange-300 text-cyan-200">
         All Posts
       </h1>
       {loading ? (
@@ -69,7 +69,7 @@ function HomePage() {
           {currentPosts.map((post) => (
             <div
               key={post.id}
-              className="overflow-hidden transition duration-300 bg-white border border-gray-200 shadow-xl rounded-3xl hover:shadow-lg"
+              className="overflow-hidden transition duration-300 bg-gray-200 border border-gray-700 shadow-xl rounded-3xl hover:shadow-lg"
             >
               <Link to={`/post/${post.id}`}>
                 <div className="px-6 py-4">
@@ -101,7 +101,7 @@ function HomePage() {
               <li key={number} className="mx-1">
                 <button
                   onClick={() => setCurrentPage(number)}
-                  className={`px-4 py-2 border rounded-lg ${
+                  className={`px-4 py-2 hover:bg-blue-200 border rounded-lg ${
                     currentPage === number
                       ? "bg-blue-500 text-white"
                       : "bg-white text-blue-500"

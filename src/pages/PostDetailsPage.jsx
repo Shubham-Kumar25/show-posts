@@ -33,12 +33,12 @@ function PostDetailsPage() {
   }
 
   return (
-    <div className="container flex items-center justify-center h-full p-4 mx-auto bg-gray-100">
+    <div className="container flex items-center justify-center h-full p-4 mx-auto">
       <div className="w-full max-w-4xl p-1 shadow-sm rounded-3xl">
-        <h1 className="p-4 mb-4 text-3xl font-bold text-center border-b-2 border-red-800 text-amber-700">
+        <h1 className="p-4 mb-4 text-3xl font-bold text-center border-b-2 border-orange-300 text-cyan-200">
           Post by: {user.name}
         </h1>
-        <div className="mb-4 overflow-hidden bg-white rounded-lg shadow-md">
+        <div className="mb-4 overflow-hidden bg-gray-200 rounded-lg shadow-md">
           <div className="px-6 py-4">
             <div className="mb-2 text-xl font-bold">
               <span className="font-bold text-green-800">Title: </span>
@@ -54,7 +54,7 @@ function PostDetailsPage() {
             </div>
           </div>
         </div>
-        <div className="bg-white rounded-lg shadow-md">
+        <div className="bg-gray-200 rounded-lg shadow-md">
           <div className="px-6 py-4">
             <h3 className="mb-2 text-xl font-bold text-red-800">Comments:</h3>
             {comments.map((comment) => (
