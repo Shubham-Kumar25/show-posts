@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPosts } from "../redux/postsSlice";
 import { fetchUser } from "../redux/usersSlice";
@@ -27,13 +27,19 @@ function HomePage() {
     fetchData();
   }, [dispatch]);
 
-  useEffect(() => {
+  const fetchUsers = useCallback(() => {
     posts.forEach((post) => {
       if (!users[post.userId]) {
         dispatch(fetchUser(post.userId));
       }
     });
-  }, [dispatch, posts, users]);
+  }, [posts, users, dispatch]);
+
+  useEffect(() => {
+    if (posts.length) {
+      fetchUsers();
+    }
+  }, [posts.length, fetchUsers]);
 
   useEffect(() => {
     window.scrollTo({
