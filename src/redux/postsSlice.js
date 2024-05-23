@@ -10,12 +10,7 @@ const postsSlice = createSlice({
       return action.payload;
     },
     setPost(state, action) {
-      const index = state.findIndex((post) => post.id === action.payload.id);
-      if (index >= 0) {
-        state[index] = action.payload;
-      } else {
-        state.push(action.payload);
-      }
+      state.push(action.payload);
     },
   },
 });
