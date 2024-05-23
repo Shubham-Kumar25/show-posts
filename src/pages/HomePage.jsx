@@ -40,17 +40,20 @@ function HomePage() {
     if (posts.length) {
       fetchUsers();
     }
-  }, [posts.length, fetchUsers]);
+  }, [posts, fetchUsers]);
 
   const handleAuthorChange = (e) => {
     setSelectedAuthor(e.target.value);
-    console.log(selectedAuthor);
     setCurrentPage(1);
   };
 
-  const filteredPosts = selectedAuthor
-    ? posts.filter((post) => post.userId === Number(selectedAuthor))
-    : posts;
+  const filteredPosts = useMemo(
+    () =>
+      selectedAuthor
+        ? posts.filter((post) => post.userId === Number(selectedAuthor))
+        : posts,
+    [selectedAuthor, posts]
+  );
 
   useEffect(() => {
     window.scrollTo({
@@ -63,7 +66,7 @@ function HomePage() {
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = useMemo(
     () => filteredPosts.slice(indexOfFirstPost, indexOfLastPost),
-    [posts, indexOfFirstPost, indexOfLastPost, filteredPosts]
+    [indexOfFirstPost, indexOfLastPost, filteredPosts]
   );
 
   const pageNumbers = useMemo(() => {
@@ -72,7 +75,7 @@ function HomePage() {
       numbers.push(i);
     }
     return numbers;
-  }, [posts.length, postsPerPage]);
+  }, [filteredPosts.length, postsPerPage]);
 
   return (
     <div className="container p-4 mx-auto">
