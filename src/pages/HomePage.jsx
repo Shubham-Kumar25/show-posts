@@ -15,6 +15,7 @@ function HomePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedAuthor, setSelectedAuthor] = useState("");
   const [sort, setSort] = useState("");
+  const [searchKeyword, setSearchKeyword] = useState("");
 
   const postsPerPage = 10;
 
@@ -32,12 +33,20 @@ function HomePage() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (posts.length > 0) {
-      posts.forEach((post) => {
-        dispatch(fetchComments(post.id));
-      });
-    }
-  }, [dispatch, posts]);
+    const fetchCommentsForPosts = async () => {
+      try {
+        if (posts.length > 0) {
+          for (const post of posts) {
+            await dispatch(fetchComments(post.id));
+          }
+        }
+      } catch (error) {
+        console.error("Failed to fetch comments:", error);
+      }
+    };
+
+    fetchCommentsForPosts();
+  }, [dispatch, posts, selectedAuthor, searchKeyword, sort]);
 
   const fetchUsers = useCallback(() => {
     posts.forEach((post) => {
@@ -58,25 +67,38 @@ function HomePage() {
     setCurrentPage(1);
   };
 
-  const handleSortChange = (e) => {
+  const handleSearch = (e) => {
+    setSearchKeyword(e.target.value);
+    setCurrentPage(1);
+  };
+
+  const handleSort = (e) => {
     setSort(e.target.value);
   };
 
-  const filteredPosts = useMemo(
-    () =>
-      posts.filter((post) =>
-        selectedAuthor ? post.userId === Number(selectedAuthor) : true
-      ),
-    [selectedAuthor, posts]
-  );
+  const filteredPosts = posts.filter((post) => {
+    const matchAuthor = selectedAuthor
+      ? post.userId === Number(selectedAuthor)
+      : post;
+    const searchPost =
+      post.title.toLowerCase().includes(searchKeyword.toLowerCase()) ||
+      post.body.toLowerCase().includes(searchKeyword.toLowerCase());
+
+    return matchAuthor && searchPost;
+  });
 
   const sortedPosts = useMemo(() => {
-    const sorted = [...filteredPosts];
-    if (sort === "title") {
-      sorted.sort((a, b) => a.title.localeCompare(b.title));
-    }
-    return sorted;
-  }, [filteredPosts, sort]);
+    return filteredPosts.sort((a, b) => {
+      if (sort === "title") {
+        return a.title.localeCompare(b.title);
+      } else if (sort === "author") {
+        const authorA = users[a.userId]?.name || "";
+        const authorB = users[b.userId]?.name || "";
+        return authorA.localeCompare(authorB);
+      }
+      return 0;
+    });
+  }, [sort, filteredPosts, users]);
 
   useEffect(() => {
     window.scrollTo({
@@ -114,29 +136,45 @@ function HomePage() {
       ) : (
         <>
           <div>
+            <label htmlFor="author" className="mb-2 font-medium text-white">
+              Filter by Author :
+            </label>
             <select
-              value={selectedAuthor}
-              onChange={handleAuthorChange}
               id="author"
+              onChange={handleAuthorChange}
+              value={selectedAuthor}
               className="w-full p-2 mb-4 rounded-full"
             >
-              <option value="">All Authors</option>
+              <option value="">Select Author</option>
               {Object.values(users).map((user) => (
                 <option key={user.id} value={user.id}>
                   {user.name}
                 </option>
               ))}
             </select>
-
+            <label htmlFor="search" className="mb-2 font-medium text-white">
+              Search Posts....
+            </label>
+            <input
+              type="text"
+              id="search"
+              placeholder="search by keyword"
+              value={searchKeyword}
+              onChange={handleSearch}
+              className="w-full p-2 mb-4 rounded-full"
+            />
+            <label htmlFor="sort" className="mb-2 font-medium text-white">
+              Sort By :
+            </label>
             <select
               id="sort"
-              className="w-full p-2 mb-4 rounded-full"
               value={sort}
-              onChange={handleSortChange}
+              onChange={handleSort}
+              className="w-full p-2 mb-4 rounded-full"
             >
-              <option value="">Sort by</option>
-              <option value="author">Author</option>
+              <option value="">Sort By</option>
               <option value="title">Title</option>
+              <option value="author">Author</option>
             </select>
           </div>
           <div className="grid grid-cols-1 gap-4">
@@ -149,7 +187,7 @@ function HomePage() {
                   <div className="px-6 py-4">
                     <div className="mb-2 text-xl font-semibold text-violet-800">
                       <span className="font-bold text-green-800">Title:</span>{" "}
-                      {post.title} ({getCommentCount(post.id)}){" "}
+                      {post.title} ({getCommentCount(post.id)})
                     </div>
                     <p className="text-base text-gray-700">
                       <span className="font-semibold text-green-800">
