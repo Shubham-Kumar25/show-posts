@@ -12,6 +12,7 @@ function HomePage() {
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedAuthor, setSelectedAuthor] = useState("");
+  const [sort, setSort] = useState("");
 
   const postsPerPage = 10;
 
@@ -47,13 +48,28 @@ function HomePage() {
     setCurrentPage(1);
   };
 
-  const filteredPosts = useMemo(
-    () =>
-      selectedAuthor
-        ? posts.filter((post) => post.userId === Number(selectedAuthor))
-        : posts,
-    [selectedAuthor, posts]
+  const handleSortChange = (e) => {
+    setSort(e.target.value);
+  };
+
+  const filteredPosts = useMemo(() =>
+    posts.filter(
+      (post) => {
+        const matchAuthor = selectedAuthor
+          ? post.userId === Number(selectedAuthor)
+          : posts;
+        return matchAuthor;
+      },
+      [selectedAuthor, posts]
+    )
   );
+
+  const sortedPosts = filteredPosts.sort((a, b) => {
+    if (sort === "title") {
+      return a.title.localeCompare(b.title);
+    }
+    return 0;
+  });
 
   useEffect(() => {
     window.scrollTo({
@@ -65,17 +81,17 @@ function HomePage() {
   const indexOfLastPost = currentPage * postsPerPage;
   const indexOfFirstPost = indexOfLastPost - postsPerPage;
   const currentPosts = useMemo(
-    () => filteredPosts.slice(indexOfFirstPost, indexOfLastPost),
-    [indexOfFirstPost, indexOfLastPost, filteredPosts]
+    () => sortedPosts.slice(indexOfFirstPost, indexOfLastPost),
+    [indexOfFirstPost, indexOfLastPost, sortedPosts]
   );
 
   const pageNumbers = useMemo(() => {
     const numbers = [];
-    for (let i = 1; i <= Math.ceil(filteredPosts.length / postsPerPage); i++) {
+    for (let i = 1; i <= Math.ceil(sortedPosts.length / postsPerPage); i++) {
       numbers.push(i);
     }
     return numbers;
-  }, [filteredPosts.length, postsPerPage]);
+  }, [sortedPosts.length, postsPerPage]);
 
   return (
     <div className="container p-4 mx-auto">
@@ -99,6 +115,17 @@ function HomePage() {
                   {user.name}
                 </option>
               ))}
+            </select>
+
+            <select
+              id="sort"
+              className="w-full p-2 mb-4 rounded-full"
+              value={sort}
+              onChange={handleSortChange}
+            >
+              <option value="">sort by</option>
+              <option value="author">Author</option>
+              <option value="title">Title</option>
             </select>
           </div>
           <div className="grid grid-cols-1 gap-4">
