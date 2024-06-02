@@ -67,6 +67,10 @@ function HomePage() {
   const sortedPosts = filteredPosts.sort((a, b) => {
     if (sort === "title") {
       return a.title.localeCompare(b.title);
+    } else if (sort === "author") {
+      const authorA = users[a.userId]?.name || "";
+      const authorB = users[b.userId]?.name || "";
+      return authorA.localeCompare(authorB);
     }
     return 0;
   });
