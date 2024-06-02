@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo, useCallback } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { fetchPosts } from "../redux/postsSlice";
 import { fetchUser } from "../redux/usersSlice";
+import { fetchComments } from "../redux/commentsSlice";
 import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
 
@@ -9,6 +10,7 @@ function HomePage() {
   const dispatch = useDispatch();
   const posts = useSelector((state) => state.posts);
   const users = useSelector((state) => state.users);
+  const comments = useSelector((state) => state.comments);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedAuthor, setSelectedAuthor] = useState("");
@@ -28,6 +30,14 @@ function HomePage() {
     };
     fetchData();
   }, [dispatch]);
+
+  useEffect(() => {
+    if (posts.length > 0) {
+      posts.forEach((post) => {
+        dispatch(fetchComments(post.id));
+      });
+    }
+  }, [dispatch, posts]);
 
   const fetchUsers = useCallback(() => {
     posts.forEach((post) => {
@@ -52,28 +62,21 @@ function HomePage() {
     setSort(e.target.value);
   };
 
-  const filteredPosts = useMemo(() =>
-    posts.filter(
-      (post) => {
-        const matchAuthor = selectedAuthor
-          ? post.userId === Number(selectedAuthor)
-          : posts;
-        return matchAuthor;
-      },
-      [selectedAuthor, posts]
-    )
+  const filteredPosts = useMemo(
+    () =>
+      posts.filter((post) =>
+        selectedAuthor ? post.userId === Number(selectedAuthor) : true
+      ),
+    [selectedAuthor, posts]
   );
 
-  const sortedPosts = filteredPosts.sort((a, b) => {
+  const sortedPosts = useMemo(() => {
+    const sorted = [...filteredPosts];
     if (sort === "title") {
-      return a.title.localeCompare(b.title);
-    } else if (sort === "author") {
-      const authorA = users[a.userId]?.name || "";
-      const authorB = users[b.userId]?.name || "";
-      return authorA.localeCompare(authorB);
+      sorted.sort((a, b) => a.title.localeCompare(b.title));
     }
-    return 0;
-  });
+    return sorted;
+  }, [filteredPosts, sort]);
 
   useEffect(() => {
     window.scrollTo({
@@ -96,6 +99,10 @@ function HomePage() {
     }
     return numbers;
   }, [sortedPosts.length, postsPerPage]);
+
+  const getCommentCount = (postId) => {
+    return comments[postId] ? comments[postId].length : 0;
+  };
 
   return (
     <div className="container p-4 mx-auto">
@@ -127,7 +134,7 @@ function HomePage() {
               value={sort}
               onChange={handleSortChange}
             >
-              <option value="">sort by</option>
+              <option value="">Sort by</option>
               <option value="author">Author</option>
               <option value="title">Title</option>
             </select>
@@ -142,7 +149,7 @@ function HomePage() {
                   <div className="px-6 py-4">
                     <div className="mb-2 text-xl font-semibold text-violet-800">
                       <span className="font-bold text-green-800">Title:</span>{" "}
-                      {post.title}
+                      {post.title} ({getCommentCount(post.id)}){" "}
                     </div>
                     <p className="text-base text-gray-700">
                       <span className="font-semibold text-green-800">
